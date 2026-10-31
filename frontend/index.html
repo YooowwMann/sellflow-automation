@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SellFlow Automation</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="toast hidden"></div>
+
+  <!-- Login View -->
+  <div id="loginView" class="login-wrap hidden">
+    <form id="loginForm" class="login-card">
+      <div class="brand-mark">S</div>
+      <p class="eyebrow">SELLFLOW AUTOMATION</p>
+      <h1>Selamat datang kembali</h1>
+      <p class="muted">Masuk untuk mengelola produk dan publikasi.</p>
+      <label>Username<input name="username" autocomplete="username" required></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn primary full" type="submit">Masuk ke dashboard</button>
+      <p id="loginError" class="error"></p>
+    </form>
+  </div>
+
+  <!-- Main App Shell -->
+  <div id="appView" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div><b>SellFlow</b><small>Automation</small></div>
+      </div>
+      <div class="nav-label">MENU UTAMA</div>
+      <a id="navDashboard" class="nav-item selected" href="#dashboard"><span>▦</span> Dashboard</a>
+      <a id="navProducts" class="nav-item" href="#products"><span>□</span> Produk</a>
+      <a id="navPublish" class="nav-item" href="#publish"><span>⇧</span> Publikasi</a>
+      <a id="navHistory" class="nav-item" href="#history"><span>◷</span> Riwayat</a>
+      <div class="sidebar-bottom">
+        <div class="avatar" id="userAvatar">A</div>
+        <div><b id="userNameDisplay">Administrator</b><small>Workspace pribadi</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">WORKSPACE</p>
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-actions">
+          <button id="logoutBtn" class="btn outline">Keluar</button>
+        </div>
+      </header>
+
+      <!-- View 1: Dashboard -->
+      <div id="dashboardSection">
+        <section class="welcome">
+          <div>
+            <p class="eyebrow">RINGKASAN TOKO</p>
+            <h1>Kelola daganganmu lebih mudah.</h1>
+            <p class="muted">Satu tempat untuk menginput katalog preloved dan memantau status kanal penjualan.</p>
+          </div>
+          <div class="welcome-icon">✦</div>
+        </section>
+
+        <section class="stats">
+          <article class="stat-card">
+            <div class="stat-icon purple">□</div>
+            <p>Total Produk</p>
+            <strong id="totalProducts">—</strong>
+            <small>Produk tersimpan di katalog</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <p>Produk Aktif</p>
+            <strong id="activeProducts">—</strong>
+            <small>Siap dipublikasikan / dijual</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon orange">◷</div>
+            <p>Draft</p>
+            <strong id="draftProducts">—</strong>
+            <small>Menunggu kelengkapan data</small>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Koneksi platform</h3>
+              <p class="muted">Status integrasi akun kanal penjualan.</p>
+            </div>
+            <span class="pill">3 platform</span>
+          </div>
+          <div id="platformList" class="platform-list"></div>
+        </section>
+
+        <section class="panel roadmap">
+          <div>
+            <h3>Status Pembangunan</h3>
+            <p class="muted">Tahap 1 (Fondasi & Keamanan) dan Tahap 2 (Manajemen Produk & Foto) sudah aktif. Tahap 3 (AI Copywriter) berikutnya.</p>
+          </div>
+          <div class="progress"><span style="width: 45%;"></span></div>
+          <small>TAHAP 2 · PRODUCT MANAGER</small>
+        </section>
+      </div>
+
+      <!-- View 2: Produk -->
+      <div id="productsSection" class="hidden">
+        <div class="section-header">
+          <div class="filters-wrap">
+            <input id="productSearchInput" type="text" class="input-search" placeholder="Cari nama barang, brand, deskripsi...">
+            <select id="productStatusFilter" class="select-filter">
+              <option value="">Semua Status</option>
+              <option value="active">Aktif</option>
+              <option value="draft">Draft</option>
+              <option value="sold">Terjual</option>
+              <option value="archived">Diarsipkan</option>
+            </select>
+            <select id="productCategoryFilter" class="select-filter">
+              <option value="">Semua Kategori</option>
+              <option value="Pakaian Pria">Pakaian Pria</option>
+              <option value="Pakaian Wanita">Pakaian Wanita</option>
+              <option value="Sepatu">Sepatu</option>
+              <option value="Tas">Tas</option>
+              <option value="Aksesoris">Aksesoris</option>
+              <option value="Elektronik">Elektronik</option>
+              <option value="Buku & Hobi">Buku & Hobi</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <button id="btnOpenNewProductModal" class="btn primary">+ Tambah Produk</button>
+        </div>
+
+        <div id="productListContainer" class="product-grid">
+          <!-- Loaded dynamically via JavaScript -->
+        </div>
+      </div>
+
+      <!-- View 3: Publikasi -->
+      <div id="publishSection" class="hidden">
+        <div class="welcome" style="margin-bottom: 20px;">
+          <div>
+            <p class="eyebrow">DISTRIBUSI MULTI-KANAL</p>
+            <h1>Publikasi Katalog Preloved</h1>
+            <p class="muted">Siapkan paket posting untuk Shopee, Facebook Groups (Assisted Posting), dan Preloved secara terkoordinasi.</p>
+          </div>
+          <div class="welcome-icon">⇧</div>
+        </div>
+
+        <div class="publications-table-wrap panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Harga & Stok</th>
+                <th>Shopee</th>
+                <th>Facebook Group</th>
+                <th>Aplikasi Preloved</th>
+              </tr>
+            </thead>
+            <tbody id="publicationsTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- View 4: Riwayat Penjualan -->
+      <div id="historySection" class="hidden">
+        <div class="welcome" style="margin-bottom: 20px;">
+          <div>
+            <p class="eyebrow">HISTORI & OMZET</p>
+            <h1>Riwayat Penjualan Katalog</h1>
+            <p class="muted">Catatan transaksi barang preloved yang telah laku dan performa tiap kanal penjualan.</p>
+          </div>
+          <div class="welcome-icon">◷</div>
+        </div>
+
+        <section class="stats">
+          <article class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <p>Total Barang Terjual</p>
+            <strong id="historyTotalSold">0</strong>
+            <small>Unit barang laku</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon purple">Rp</div>
+            <p>Total Pendapatan</p>
+            <strong id="historyTotalRevenue">Rp 0</strong>
+            <small>Akumulasi harga deal</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon orange">🏆</div>
+            <p>Kanal Paling Laris</p>
+            <strong id="historyTopChannel">—</strong>
+            <small>Penyumbang transaksi terbanyak</small>
+          </article>
+        </section>
+
+        <div class="panel publications-table-wrap">
+          <div class="panel-heading" style="padding: 16px 18px 0;">
+            <div>
+              <h3>Daftar Transaksi Terjual</h3>
+              <p class="muted">Histori barang keluar dan catatan pembeli.</p>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tanggal Terjual</th>
+                <th>Produk</th>
+                <th>Kanal</th>
+                <th>Harga Deal</th>
+                <th>Catatan Pembeli</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer>
+        SellFlow Automation <span>Versi 0.5.0 (Riwayat & Inventory Sync Aktif)</span>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Modal Tambah / Edit Produk -->
+  <div id="productModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="productModalTitle">Tambah Produk Baru</h3>
+        <button id="btnCloseProductModal" class="btn-close">&times;</button>
+      </div>
+      <form id="productForm">
+        <input type="hidden" id="formProductId">
+        
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Nama Produk <b class="req">*</b></span>
+            <input id="formProductName" required placeholder="Contoh: Kemeja Flannel Uniqlo Size L">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="form-group">
+            <span>Kategori</span>
+            <select id="formProductCategory">
+              <option value="">Pilih Kategori</option>
+              <option value="Pakaian Pria">Pakaian Pria</option>
+              <option value="Pakaian Wanita">Pakaian Wanita</option>
+              <option value="Sepatu">Sepatu</option>
+              <option value="Tas">Tas</option>
+              <option value="Aksesoris">Aksesoris</option>
+              <option value="Elektronik">Elektronik</option>
+              <option value="Buku & Hobi">Buku & Hobi</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </label>
+          <label class="form-group">
+            <span>Brand / Merek</span>
+            <input id="formProductBrand" placeholder="Contoh: Uniqlo, Zara, Nike">
+          </label>
+          <label class="form-group">
+            <span>Ukuran / Size</span>
+            <input id="formProductSize" placeholder="Contoh: M, XL, 42, 28-30">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="form-group">
+            <span>Harga (Rp) <b class="req">*</b></span>
+            <input id="formProductPrice" type="number" min="0" required placeholder="Contoh: 125000">
+          </label>
+          <label class="form-group">
+            <span>Stok</span>
+            <input id="formProductStock" type="number" min="0" value="1" required>
+          </label>
+          <label class="form-group">
+            <span>Kondisi Preloved</span>
+            <select id="formProductCondition">
+              <option value="Preloved - Seperti Baru">Preloved - Seperti Baru (Like New)</option>
+              <option value="Preloved - Sangat Baik" selected>Preloved - Sangat Baik</option>
+              <option value="Preloved - Baik">Preloved - Baik</option>
+              <option value="Preloved - Cukup / Ada Minus">Preloved - Cukup / Ada Minus</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Catatan Minus / Cacat / Kelengkapan</span>
+            <textarea id="formProductDefects" rows="2" placeholder="Sebutkan sejujurnya jika ada noda, robek halus, kancing lepas, atau kelengkapan box/tag."></textarea>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Deskripsi Produk</span>
+            <textarea id="formProductDescription" rows="4" placeholder="Detail bahan, warna asli, panjang x lebar, riwayat pemakaian..."></textarea>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="form-group">
+            <span>Status</span>
+            <select id="formProductStatus">
+              <option value="draft">Draft (Belum Siap)</option>
+              <option value="active" selected>Aktif (Siap Jual)</option>
+              <option value="sold">Terjual</option>
+              <option value="archived">Diarsipkan</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btnCancelProductForm" class="btn outline">Batal</button>
+          <button type="submit" class="btn primary">Simpan Produk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Kelola Foto Produk -->
+  <div id="photoModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 id="photoModalTitle">Kelola Foto Produk</h3>
+          <p class="muted" id="photoModalSubtitle">Unggah foto produk preloved (Maksimal 10 foto, JPG/PNG/WEBP hingga 10MB per foto).</p>
+        </div>
+        <button id="btnClosePhotoModal" class="btn-close">&times;</button>
+      </div>
+
+      <!-- Upload Zone -->
+      <div class="upload-zone" id="uploadDropzone">
+        <div class="upload-icon">📷</div>
+        <p><b>Pilih atau seret foto ke sini</b></p>
+        <p class="muted">Format yang didukung: JPG, PNG, WEBP (Maksimal 10 MB per foto)</p>
+        <input type="file" id="photoFileInput" multiple accept="image/jpeg,image/png,image/webp" class="hidden">
+        <button type="button" class="btn outline" id="btnTriggerUpload">Pilih Berkas Foto</button>
+        <div id="uploadProgress" class="upload-status hidden">Mengunggah foto...</div>
+      </div>
+
+      <!-- Photo Gallery -->
+      <div class="photo-gallery-heading">
+        <b>Foto Terunggah (<span id="photoCountBadge">0</span>/10)</b>
+      </div>
+      <div id="photoGalleryContainer" class="photo-gallery-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btnDonePhotos" class="btn primary">Selesai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal AI Copywriter -->
+  <div id="aiModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h3 id="aiModalTitle">✨ AI Listing Copywriter</h3>
+            <span id="aiEngineBadge" class="pill">Engine: Built-in</span>
+          </div>
+          <p class="muted" id="aiModalSubtitle">Draft judul, deskripsi, dan tagar khusus per platform berbasis data riil barang.</p>
+        </div>
+        <button id="btnCloseAiModal" class="btn-close">&times;</button>
+      </div>
+
+      <!-- Platform Selection Tabs -->
+      <div class="ai-tabs">
+        <button type="button" class="ai-tab-btn active" data-platform="shopee">Shopee (SEO Listing)</button>
+        <button type="button" class="ai-tab-btn" data-platform="facebook">Facebook Group (WTS)</button>
+        <button type="button" class="ai-tab-btn" data-platform="preloved">Aplikasi Preloved</button>
+      </div>
+
+      <!-- AI Content Box -->
+      <div class="ai-content-box">
+        <div class="ai-toolbar">
+          <div class="ai-status-indicator">
+            <span id="aiApprovalStatus" class="badge badge-draft">Belum Disetujui</span>
+            <small id="aiTokenUsage" class="muted"></small>
+          </div>
+          <button type="button" id="btnRegenerateAi" class="btn outline btn-sm">⚡ Buat Ulang Draft AI</button>
+        </div>
+
+        <form id="aiDraftForm">
+          <input type="hidden" id="aiDraftId">
+          <div class="form-row">
+            <label class="form-group full-width">
+              <span>Saran Judul Listing</span>
+              <input id="aiDraftTitle" required>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label class="form-group full-width">
+              <span>Deskripsi / Caption Penjualan</span>
+              <textarea id="aiDraftDescription" rows="8" required></textarea>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label class="form-group full-width">
+              <span>Tagar (Hashtags)</span>
+              <input id="aiDraftHashtags" placeholder="#preloved #secondhand">
+            </label>
+          </div>
+
+          <div class="modal-footer" style="justify-content:space-between;">
+            <button type="button" id="btnCopyAiContent" class="btn outline">📋 Salin Teks</button>
+            <div style="display:flex; gap:8px;">
+              <button type="submit" class="btn outline">Simpan Draft</button>
+              <button type="button" id="btnApproveAiDraft" class="btn primary">✓ Setujui Draft Ini</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Paket Publikasi / Assisted Posting -->
+  <div id="publishModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h3 id="pubModalTitle">Paket Posting</h3>
+            <span id="pubPlatformBadge" class="pill">Facebook Group</span>
+          </div>
+          <p class="muted" id="pubModalSubtitle">Alur bantuan posting manual yang sah dan bebas risiko blokir akun.</p>
+        </div>
+        <button id="btnClosePublishModal" class="btn-close">&times;</button>
+      </div>
+
+      <!-- Instructions Box -->
+      <div class="instruction-box">
+        <b>Panduan Langkah Publikasi:</b>
+        <ol id="pubInstructionsList">
+          <!-- Rendered dynamically -->
+        </ol>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="pub-quick-actions">
+        <a id="pubDestinationBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn primary">Buka Kanal Penjualan ↗</a>
+        <button type="button" id="btnCopyPubContent" class="btn outline">📋 Salin Teks Copywriting</button>
+      </div>
+
+      <!-- Photos Gallery Preview -->
+      <div class="photo-gallery-heading" style="margin-top:16px;">
+        <b>Foto Produk Siap Diposting:</b>
+      </div>
+      <div id="pubPhotosContainer" class="pub-photos-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Text Content Preview -->
+      <div class="pub-content-preview">
+        <label class="form-group full-width">
+          <span>Judul Posting:</span>
+          <input id="pubPreviewTitle" readonly class="readonly-input">
+        </label>
+        <label class="form-group full-width" style="margin-top:10px;">
+          <span>Deskripsi / Caption:</span>
+          <textarea id="pubPreviewDescription" rows="6" readonly class="readonly-input"></textarea>
+        </label>
+        <label class="form-group full-width" style="margin-top:10px;">
+          <span>Tagar:</span>
+          <input id="pubPreviewHashtags" readonly class="readonly-input">
+        </label>
+      </div>
+
+      <!-- Confirmation Box -->
+      <div class="pub-confirm-box">
+        <h4 style="margin-bottom:8px;">Konfirmasi Publikasi:</h4>
+        <p class="muted" style="margin-bottom:12px;">Setelah postingan Anda tayang, masukkan tautan URL postingan di bawah ini (opsional) untuk melacak status katalog secara terpusat.</p>
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Tautan URL Postingan / Listing:</span>
+            <input id="pubConfirmUrl" placeholder="https://facebook.com/groups/... atau https://shopee.co.id/...">
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Catatan (Opsional):</span>
+            <input id="pubConfirmNotes" placeholder="Contoh: Diposting ke Grup Jual Beli Jakarta">
+          </label>
+        </div>
+        <div class="modal-footer" style="justify-content:space-between; margin-top:16px;">
+          <button type="button" id="btnResetPublishStatus" class="btn btn-danger btn-sm">Reset Status</button>
+          <button type="button" id="btnConfirmPublishSubmit" class="btn primary">✓ Konfirmasi Sudah Diterbitkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tandai Terjual -->
+  <div id="soldModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="soldModalTitle">Tandai Barang Terjual</h3>
+          <p class="muted">Catat transaksi penjualan dan sinkronkan stok katalog.</p>
+        </div>
+        <button id="btnCloseSoldModal" class="btn-close">&times;</button>
+      </div>
+      <form id="soldForm">
+        <input type="hidden" id="soldProductId">
+        
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Kanal Penjualan (Tempat Barang Laku) <b class="req">*</b></span>
+            <select id="soldChannelSelect" required>
+              <option value="facebook">Facebook Group (Komunitas)</option>
+              <option value="shopee">Marketplace Shopee</option>
+              <option value="preloved">Aplikasi Preloved</option>
+              <option value="offline">COD / Pembeli Langsung</option>
+              <option value="lainnya">Kanal Lainnya</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Harga Deal Akhir (Rp) <b class="req">*</b></span>
+            <input id="soldPriceInput" type="number" min="0" required placeholder="Contoh: 120000">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="form-group full-width">
+            <span>Catatan Pembeli / Pengiriman (Opsional)</span>
+            <textarea id="soldBuyerNote" rows="3" placeholder="Nama pembeli, nomor resi pengiriman, atau catatan khusus..."></textarea>
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btnCancelSoldModal" class="btn outline">Batal</button>
+          <button type="submit" class="btn primary">✓ Konfirmasi Terjual</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Pengingat Penarikan Listing Multi-Kanal -->
+  <div id="unpublishChecklistModal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h3 style="color:#b45309;">⚠️ Pengingat Penarikan Listing</h3>
+            <span class="badge badge-sold">Pencegahan Stok Ganda</span>
+          </div>
+          <p class="muted" id="unpublishModalSubtitle">Barang telah berhasil ditandai terjual.</p>
+        </div>
+        <button id="btnCloseUnpublishModal" class="btn-close">&times;</button>
+      </div>
+
+      <div class="instruction-box" style="background:#fffbeb; border-color:#fde68a;">
+        <b style="color:#92400e;">Penting: Segera Nonaktifkan Listing di Kanal Lain</b>
+        <p style="margin:4px 0 0; color:#78350f; font-size:12px;">Karena barang preloved hanya tersedia 1 unit, nonaktifkan atau arsipkan listing di kanal lain di bawah ini agar pembeli lain tidak memesan barang yang sudah laku.</p>
+      </div>
+
+      <div class="publications-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Kanal Tujuan</th>
+              <th>Instruksi Penarikan</th>
+              <th>Aksi Penarikan</th>
+            </tr>
+          </thead>
+          <tbody id="unpublishTableBody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btnDoneUnpublish" class="btn primary">Selesai & Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
