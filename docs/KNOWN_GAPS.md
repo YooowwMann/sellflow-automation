@@ -8,7 +8,7 @@ Starter Tahap 1 adalah fondasi prototipe, bukan aplikasi siap produksi.
 4. [TERSELESAIKAN DI TAHAP 1] Automated tests dengan pytest (7 tes lulus mencakup hashing, health, session, unauthorized access, csrf, rate limit, dan alur produk).
 5. [TERSELESAIKAN DI TAHAP 2] CRUD produk lengkap di UI (tambah, edit, hapus, filter, dan cari) telah dibangun.
 6. [TERSELESAIKAN DI TAHAP 2] Upload multi-foto dengan validasi keamanan (ekstensi, batas ukuran, dan magic bytes signature) serta galeri foto telah diimplementasikan.
-7. [TERSELESAIKAN DI TAHAP 3] Provider AI Copywriter (Google Gemini & Built-in Engine anti-halusinasi), database drafts, approval flow, dan UI copywriting per platform telah aktif.
+7. [TERSELESAIKAN DI TAHAP 3] Provider AI Copywriter (Google Gemini & Built-in Engine AI profesional), database drafts, approval flow, dan UI copywriting per platform telah aktif.
 8. Belum ada job worker/queue (dibutuhkan untuk publikasi latar belakang saat direct API terhubung).
 9. [TERSELESAIKAN DI TAHAP 5] Alur Assisted Posting Facebook Group & Paket Publikasi Multi-Kanal (Shopee, FB, Preloved) telah aktif. Koneksi direct API otomatis tetap mematuhi aturan platform resmi.
 10. SQLite hanya untuk development; production harus PostgreSQL.

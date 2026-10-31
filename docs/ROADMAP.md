@@ -22,7 +22,7 @@
 - [x] Tests (pytest CRUD flow & upload security validation)
 
 ## Tahap 3 — AI Listing Generator
-- [x] Provider interface untuk AI (dukungan Google Gemini & Built-in Engine anti-halusinasi)
+- [x] Provider interface untuk AI (dukungan Google Gemini & Built-in Engine AI profesional)
 - [x] Prompt aman berbasis fakta produk (tanpa asumsi, wajib sebutkan minus/cacat riil)
 - [x] Template per platform (Shopee SEO, Facebook Group WTS, Aplikasi Preloved)
 - [x] Draft generation dan editing UI (Modal AI Copywriter dengan live editing per kanal)

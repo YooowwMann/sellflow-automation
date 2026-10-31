@@ -47,10 +47,10 @@ flowchart LR
     - Penamaan berkas acak UUID hex dan verifikasi *path containment* anti *path traversal*.
   - **Antarmuka UI**: Tampilan kartu produk (*product card*), modal tambah/edit produk, dan modal galeri foto (*drag-and-drop*).
 
-### Tahap 3 — Generator Copywriting AI Anti-Halusinasi
+### Tahap 3 — Generator Copywriting AI Profesional
 * **Fokus**: Membantu penjual meracik teks penawaran yang efektif tanpa mengorbankan kejujuran kondisi barang.
 * **Pencapaian Teknis**:
-  - **Prinsip Anti-Halusinasi**: Prompt sistem yang sangat ketat melarang AI mengarang kelengkapan, garansi, atau klaim kualitas tanpa dasar (*"100% original"*). Jika produk memiliki catatan cacat/minus, AI wajib menyebutkannya secara transparan dan sopan.
+  - **Prinsip Kejujuran & Profesional**: Prompt sistem yang sangat ketat melarang AI mengarang kelengkapan, garansi, atau klaim kualitas tanpa dasar (*"100% original"*). Jika produk memiliki catatan cacat/minus, AI wajib menyebutkannya secara transparan dan sopan.
   - **Dual Engine Provider**:
     - **Google Gemini Engine**: Model `gemini-2.5-flash` jika API key diisi.
     - **Built-in Rule Engine**: Generator deterministik cerdas bawaan yang berjalan instan tanpa biaya token (Rp 0) dan tanpa dependensi jaringan eksternal.

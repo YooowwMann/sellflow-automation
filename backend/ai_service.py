@@ -15,7 +15,7 @@ class GeneratedContent:
 
 STRICT_FACTS_SYSTEM_PROMPT = """Kamu adalah asisten copywriter profesional untuk SellFlow Automation khusus produk preloved / barang bekas berkualitas di Indonesia.
 
-ATURAN WAJIB & ANTI-HALUSINASI:
+ATURAN WAJIB & STANDAR PROFESIONAL:
 1. Hanya gunakan fakta yang tertera pada data produk (nama, kategori, brand, ukuran, kondisi, minus/cacat, harga, deskripsi).
 2. DILARANG KERAS mengarang spesifikasi, kelengkapan, garansi, atau riwayat pemakaian yang tidak tertulis.
 3. JANGAN mengklaim '100% original', 'authentic', atau 'seperti baru' jika tidak tertulis dalam data pengguna.
@@ -103,7 +103,7 @@ def generate_builtin_content(product: Product, platform: str) -> GeneratedConten
     )
 
 async def generate_gemini_content(product: Product, platform: str) -> GeneratedContent:
-    """Memanggil Google Gemini API secara aman dengan validasi anti-halusinasi."""
+    """Memanggil Google Gemini API secara aman dengan standar copywriting profesional."""
     platform_name = {
         "shopee": "Marketplace Shopee (Gaya keyword SEO, maksimal 120 karakter judul, deskripsi rapi berpoin)",
         "facebook": "Komunitas Facebook Group (Gaya santai ramah WTS/jual preloved, harga jelas, ajakan PM sopan)",
